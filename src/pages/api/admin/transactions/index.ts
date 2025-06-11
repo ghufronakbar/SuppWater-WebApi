@@ -23,6 +23,9 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     include: {
       user: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
   return res.status(200).json({ message: "Success", data: transactions });
 }

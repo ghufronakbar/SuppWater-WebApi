@@ -26,6 +26,11 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     where: {
       isDeleted: false,
     },
+    orderBy: {
+      orderItems: {
+        _count: "desc",
+      },
+    },
   });
   return res.status(200).json({ message: "Success", data: products });
 }
