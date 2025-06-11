@@ -11,7 +11,7 @@ export default async function handler(
 ) {
   try {
     if (req.method !== "POST") return res.status(405).end();
-    const { email, password, role, name } = req.body;
+    const { email, password, role, name, bankName, bankAccount } = req.body;
     if (!email || !password || !role || !name) {
       return res
         .status(400)
@@ -19,6 +19,11 @@ export default async function handler(
     }
     if (role !== "Seller" && role !== "User") {
       return res.status(400).json({ status: 400, message: "Role tidak valid" });
+    }
+    if (role === "Seller" && (!bankName || !bankAccount)) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Harap isi semua data" });
     }
     const re =
       /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;

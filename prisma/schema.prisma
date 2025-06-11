@@ -20,6 +20,9 @@ model User {
   role    Role    @default(User)
   picture String?
 
+  bankName    String?
+  bankAccount String?
+
   email    String @unique
   password String
 

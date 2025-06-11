@@ -12,11 +12,49 @@ import { FiUsers } from "react-icons/fi";
 import { Api } from "@/models/Api";
 import { UploadApiResponse } from "cloudinary";
 import { AxiosError } from "axios";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+
+const INDONESIAN_BANKS = [
+  "BCA",
+  "Mandiri",
+  "BNI",
+  "BRI",
+  "BTN",
+  "Permata",
+  "Danamon",
+  "CIMB Niaga",
+  "OCBC NISP",
+  "Maybank",
+  "Panin Bank",
+  "Mega",
+  "Sinarmas",
+  "Bukopin",
+  "Commonwealth",
+  "BCA Virtual Account",
+  "Mandiri Virtual Account",
+  "BNI Virtual Account",
+  "BRI Virtual Account",
+  "Permata Virtual Account",
+  "ShopeePay",
+  "OVO",
+  "GoPay",
+  "DANA",
+  "LinkAja",
+  "QRIS",
+];
 
 interface ProfileDTO {
   name: string;
   email: string;
   picture: string | null;
+  bankName: string;
+  bankAccount: string;
 }
 
 const SellerProfilePage = () => {
@@ -26,6 +64,8 @@ const SellerProfilePage = () => {
     name: "",
     email: "",
     picture: "",
+    bankName: "",
+    bankAccount: "",
   });
   const [loading, setLoading] = useState(false);
   const [passwords, setPasswords] = useState({
@@ -40,12 +80,18 @@ const SellerProfilePage = () => {
         name: user.name || "",
         email: user.email || "",
         picture: user.picture || "",
+        bankName: user.bankName || "",
+        bankAccount: user.bankAccount || "",
       });
     }
   }, [user]);
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
+  };
+
+  const handleBankNameChange = (value: string) => {
+    setProfile((prev) => ({ ...prev, bankName: value }));
   };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
@@ -118,7 +164,6 @@ const SellerProfilePage = () => {
         }
       }
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         toast({
           title: "Gagal",
@@ -170,12 +215,6 @@ const SellerProfilePage = () => {
               )}
               <div className="flex flex-row gap-2 mx-auto items-center justify-center">
                 <Input
-                  // onClick={() => {
-                  //   console.log("hit");
-                  //   const element = document.getElementById("picture");
-                  //   console.log(element);
-                  //   element?.click();
-                  // }}
                   onChange={handlePictureChange}
                   type="file"
                   placeholder="Ganti Foto"
@@ -193,7 +232,6 @@ const SellerProfilePage = () => {
                   </Button>
                 )}
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="name">Nama</Label>
                 <Input
@@ -215,12 +253,35 @@ const SellerProfilePage = () => {
                   type="email"
                 />
               </div>
-              <div className="space-y-2 hidden">
-                <Label htmlFor="picture">Foto</Label>
+              <div className="space-y-2">
+                <Label htmlFor="bankName">Nama Bank / E-wallet</Label>
+                <Select
+                  value={profile.bankName}
+                  onValueChange={handleBankNameChange}
+                  required
+                >
+                  <SelectTrigger id="bankName" className="w-full">
+                    <SelectValue placeholder="Pilih bank atau VA" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {INDONESIAN_BANKS.map((bank) => (
+                      <SelectItem key={bank} value={bank}>
+                        {bank}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bankAccount">Nomor Rekening / Akun</Label>
                 <Input
-                  id="picture"
-                  // value={profile.picture}
-                  onChange={handlePictureChange}
+                  id="bankAccount"
+                  name="bankAccount"
+                  type="text"
+                  placeholder="Masukkan nomor rekening / akun"
+                  value={profile.bankAccount}
+                  onChange={handleProfileChange}
+                  required
                 />
               </div>
               <Button type="submit" disabled={loading} className="w-full">

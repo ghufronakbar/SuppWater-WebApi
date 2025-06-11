@@ -101,7 +101,7 @@ async function PATCH(req: NextApiRequest, res: NextApiResponse) {
         select: {
           product: {
             select: {
-              userId,
+              userId: true,
             },
           },
         },

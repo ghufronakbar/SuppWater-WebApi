@@ -16,12 +16,21 @@ import { APP_NAME } from "@/constants";
 import { AxiosError } from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface RegisterDTO {
   name: string;
   email: string;
   password: string;
   role: "Seller";
+  bankName: string;
+  bankAccount: string;
 }
 
 const initRegisterDTO: RegisterDTO = {
@@ -29,7 +38,40 @@ const initRegisterDTO: RegisterDTO = {
   email: "",
   password: "",
   role: "Seller",
+  bankName: "",
+  bankAccount: "",
 };
+
+const INDONESIAN_BANKS = [
+  // Bank Konvensional
+  "BCA",
+  "Mandiri",
+  "BNI",
+  "BRI",
+  "BTN",
+  "Permata",
+  "Danamon",
+  "CIMB Niaga",
+  "OCBC NISP",
+  "Maybank",
+  "Panin Bank",
+  "Mega",
+  "Sinarmas",
+  "Bukopin",
+  "Commonwealth",
+  // Virtual Account
+  "BCA Virtual Account",
+  "Mandiri Virtual Account",
+  "BNI Virtual Account",
+  "BRI Virtual Account",
+  "Permata Virtual Account",
+  "ShopeePay",
+  "OVO",
+  "GoPay",
+  "DANA",
+  "LinkAja",
+  "QRIS",
+];
 
 const RegisterPage = () => {
   const [form, setForm] = useState<RegisterDTO>(initRegisterDTO);
@@ -118,6 +160,39 @@ const RegisterPage = () => {
                 type="password"
                 placeholder="Masukkan kata sandi"
                 value={form.password}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bankName">Nama Bank / E-wallet</Label>
+              <Select
+                value={form.bankName}
+                onValueChange={(val) =>
+                  setForm((prev) => ({ ...prev, bankName: val }))
+                }
+                required
+              >
+                <SelectTrigger id="bankName" className="w-full">
+                  <SelectValue placeholder="Pilih bank atau VA" />
+                </SelectTrigger>
+                <SelectContent>
+                  {INDONESIAN_BANKS.map((bank) => (
+                    <SelectItem key={bank} value={bank}>
+                      {bank}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bankAccount">Nomor Rekening / Akun</Label>
+              <Input
+                id="bankAccount"
+                name="bankAccount"
+                type="text"
+                placeholder="Masukkan nomor rekening / akun"
+                value={form.bankAccount}
                 onChange={handleInputChange}
                 required
               />

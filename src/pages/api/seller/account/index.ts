@@ -55,9 +55,9 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 
 // EDIT PROFILE
 async function PUT(req: NextApiRequest, res: NextApiResponse) {
-  const { email, name, picture } = req.body;
+  const { email, name, picture, bankName, bankAccount } = req.body;
   const userId = req.decoded?.id;
-  if (!name || !email) {
+  if (!name || !email || !userId || !bankName || !bankAccount) {
     return res.status(400).json({ message: "Harap isi semua field" });
   }
   const re =
@@ -79,7 +79,7 @@ async function PUT(req: NextApiRequest, res: NextApiResponse) {
   }
   const user = await db.user.update({
     where: { id: userId },
-    data: { email, name, picture: picture || null },
+    data: { email, name, picture: picture || null, bankAccount, bankName },
   });
   const accessToken = jwt.sign(user, JWT_SECRET);
 
