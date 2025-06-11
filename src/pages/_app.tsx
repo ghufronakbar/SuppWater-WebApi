@@ -2,6 +2,8 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { APP_NAME } from "@/constants";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -12,7 +14,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>{APP_NAME}</title>
       </Head>
       <div className="font-poppins">
-        <Component {...pageProps} />
+        <AuthProvider>
+          <Component {...pageProps} />
+          <Toaster />
+        </AuthProvider>
       </div>
     </>
   );

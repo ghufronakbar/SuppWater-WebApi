@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/router";
+import api from "@/config/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,37 +10,42 @@ import { APP_NAME } from "@/constants";
 import { AxiosError } from "axios";
 import Link from "next/link";
 
-interface LoginDTO {
+interface RegisterDTO {
+  name: string;
   email: string;
   password: string;
+  role: "User" | "Seller";
 }
 
-const initLoginDTO: LoginDTO = {
+const initRegisterDTO: RegisterDTO = {
+  name: "",
   email: "",
   password: "",
+  role: "User",
 };
 
-const LoginPage = () => {
-  const [form, setForm] = useState<LoginDTO>(initLoginDTO);
+const RegisterPage = () => {
+  const [form, setForm] = useState<RegisterDTO>(initRegisterDTO);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await login(form.email, form.password);
+      await api.post("/register", form);
       toast({
         title: "Success",
-        description: "Login successful!",
+        description: "Registration successful! Please login.",
       });
+      router.push("/login");
     } catch (error) {
       if (error instanceof AxiosError) {
         toast({
           title: "Error",
-          description: error.response?.data?.message || "Login failed",
+          description: error.response?.data?.message || "Registration failed",
           variant: "destructive",
         });
       }
@@ -48,7 +54,7 @@ const LoginPage = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
@@ -58,10 +64,22 @@ const LoginPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary">{APP_NAME}</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+          <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={form.name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -86,14 +104,28 @@ const LoginPage = () => {
                 required
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <select
+                id="role"
+                name="role"
+                value={form.role}
+                onChange={handleInputChange}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                required
+              >
+                <option value="User">User</option>
+                <option value="Seller">Seller</option>
+              </select>
+            </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Register here
+            Already have an account?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Sign in here
             </Link>
           </div>
         </CardContent>
@@ -102,4 +134,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
