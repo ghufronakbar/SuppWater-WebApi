@@ -28,6 +28,7 @@ import {
   ArcElement,
 } from "chart.js";
 import { User, Product, Order, Transaction } from "@prisma/client";
+import { APP_NAME } from "@/constants";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -137,7 +138,7 @@ const DashboardAdmin = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">
-            Selamat datang di Dashboard Admin SuppWater, {dashboard.admin.name}!
+            Selamat datang di Dashboard Admin {APP_NAME}, {dashboard.admin.name}!
           </p>
         </div>
 
