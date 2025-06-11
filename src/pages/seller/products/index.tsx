@@ -10,6 +10,7 @@ import { Product, User } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
 import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
+import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -73,7 +74,8 @@ const SellerProductsPage = () => {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to create product",
+        description:
+          error.response?.data?.message || "Failed to create product",
         variant: "destructive",
       });
     } finally {
@@ -83,29 +85,23 @@ const SellerProductsPage = () => {
 
   const addImage = () => {
     if (imageUrl.trim()) {
-      setForm(prev => ({
+      setForm((prev) => ({
         ...prev,
-        images: [...prev.images, imageUrl.trim()]
+        images: [...prev.images, imageUrl.trim()],
       }));
       setImageUrl("");
     }
   };
 
   const removeImage = (index: number) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
   if (loading) {
-    return (
-      <SellerLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </SellerLayout>
-    );
+    return <SellerLoading />;
   }
 
   return (
@@ -135,7 +131,9 @@ const SellerProductsPage = () => {
                     <Input
                       id="name"
                       value={form.name}
-                      onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, name: e.target.value }))
+                      }
                       required
                     />
                   </div>
@@ -145,7 +143,12 @@ const SellerProductsPage = () => {
                       id="price"
                       type="number"
                       value={form.price}
-                      onChange={(e) => setForm(prev => ({ ...prev, price: Number(e.target.value) }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          price: Number(e.target.value),
+                        }))
+                      }
                       required
                     />
                   </div>
@@ -156,7 +159,9 @@ const SellerProductsPage = () => {
                     id="desc"
                     className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     value={form.desc}
-                    onChange={(e) => setForm(prev => ({ ...prev, desc: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, desc: e.target.value }))
+                    }
                     required
                   />
                 </div>
@@ -168,7 +173,9 @@ const SellerProductsPage = () => {
                       value={imageUrl}
                       onChange={(e) => setImageUrl(e.target.value)}
                     />
-                    <Button type="button" onClick={addImage}>Add</Button>
+                    <Button type="button" onClick={addImage}>
+                      Add
+                    </Button>
                   </div>
                   {form.images.length > 0 && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
@@ -197,7 +204,11 @@ const SellerProductsPage = () => {
                   <Button type="submit" disabled={formLoading}>
                     {formLoading ? "Creating..." : "Create Product"}
                   </Button>
-                  <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowForm(false)}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -213,7 +224,10 @@ const SellerProductsPage = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
-                <div key={product.id} className="border rounded-lg p-4 space-y-3">
+                <div
+                  key={product.id}
+                  className="border rounded-lg p-4 space-y-3"
+                >
                   {product.images.length > 0 && (
                     <img
                       src={product.images[0]}
@@ -223,7 +237,9 @@ const SellerProductsPage = () => {
                   )}
                   <div>
                     <h3 className="font-semibold text-lg">{product.name}</h3>
-                    <p className="text-sm text-gray-600 line-clamp-2">{product.desc}</p>
+                    <p className="text-sm text-gray-600 line-clamp-2">
+                      {product.desc}
+                    </p>
                     <p className="text-lg font-bold text-green-600 mt-2">
                       {formatRupiah(product.price)}
                     </p>

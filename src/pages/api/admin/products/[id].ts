@@ -20,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 // GET ONE PRODUCT
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
-  const product = await db.product.findUnique({
+  const product = await db.product.findFirst({
     where: { id },
     include: {
       user: true,

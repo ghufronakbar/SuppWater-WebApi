@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Order, User, OrderItem, Product } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
+import { AdminLoading } from "@/components/layouts/loading/AdminLoading";
 
 interface OrderWithDetails extends Order {
   user: User;
@@ -59,20 +60,16 @@ const AdminOrdersPage = () => {
   };
 
   if (loading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </AdminLayout>
-    );
+    return <AdminLoading />;
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Orders Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Orders Management
+          </h1>
           <p className="text-gray-600">Monitor all orders in the system</p>
         </div>
 

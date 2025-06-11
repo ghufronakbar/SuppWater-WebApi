@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
 import SellerLayout from "@/components/layouts/SellerLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import api from "@/config/api";
 import { useToast } from "@/components/ui/use-toast";
-import { FiPackage, FiShoppingCart, FiDollarSign, FiTrendingUp } from "react-icons/fi";
+import {
+  FiPackage,
+  FiShoppingCart,
+  FiDollarSign,
+  FiTrendingUp,
+} from "react-icons/fi";
 import formatRupiah from "@/utils/format/formatRupiah";
+import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
 
 interface DashboardStats {
   totalProducts: number;
@@ -30,7 +42,7 @@ const DashboardSeller = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch all data in parallel
       const [productsRes, ordersRes, transactionsRes] = await Promise.all([
         api.get("/seller/products"),
@@ -102,13 +114,7 @@ const DashboardSeller = () => {
   ];
 
   if (loading) {
-    return (
-      <SellerLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </SellerLayout>
-    );
+    return <SellerLoading />;
   }
 
   return (
@@ -123,7 +129,9 @@ const DashboardSeller = () => {
           {statCards.map((stat, index) => (
             <Card key={index}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
                 <div className={`p-2 rounded-full ${stat.bgColor}`}>
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
                 </div>

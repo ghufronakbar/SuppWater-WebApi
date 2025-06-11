@@ -1,9 +1,21 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/layouts/AdminLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import api from "@/config/api";
 import { useToast } from "@/components/ui/use-toast";
-import { FiUsers, FiPackage, FiShoppingCart, FiDollarSign } from "react-icons/fi";
+import {
+  FiUsers,
+  FiPackage,
+  FiShoppingCart,
+  FiDollarSign,
+} from "react-icons/fi";
+import { AdminLoading } from "@/components/layouts/loading/AdminLoading";
 
 interface DashboardStats {
   totalUsers: number;
@@ -29,14 +41,15 @@ const DashboardAdmin = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch all data in parallel
-      const [usersRes, productsRes, ordersRes, transactionsRes] = await Promise.all([
-        api.get("/admin/users"),
-        api.get("/admin/products"),
-        api.get("/admin/orders"),
-        api.get("/admin/transactions"),
-      ]);
+      const [usersRes, productsRes, ordersRes, transactionsRes] =
+        await Promise.all([
+          api.get("/admin/users"),
+          api.get("/admin/products"),
+          api.get("/admin/orders"),
+          api.get("/admin/transactions"),
+        ]);
 
       setStats({
         totalUsers: usersRes.data.data.length,
@@ -91,13 +104,7 @@ const DashboardAdmin = () => {
   ];
 
   if (loading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </AdminLayout>
-    );
+    return <AdminLoading />;
   }
 
   return (
@@ -112,7 +119,9 @@ const DashboardAdmin = () => {
           {statCards.map((stat, index) => (
             <Card key={index}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
                 <div className={`p-2 rounded-full ${stat.bgColor}`}>
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
                 </div>
@@ -136,8 +145,12 @@ const DashboardAdmin = () => {
                 <div className="flex items-center space-x-4">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">System is running smoothly</p>
-                    <p className="text-xs text-gray-500">All services operational</p>
+                    <p className="text-sm font-medium">
+                      System is running smoothly
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      All services operational
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -164,12 +177,8 @@ const DashboardAdmin = () => {
                 <p className="text-sm text-gray-600">
                   • Monitor product listings
                 </p>
-                <p className="text-sm text-gray-600">
-                  • Track order status
-                </p>
-                <p className="text-sm text-gray-600">
-                  • Review transactions
-                </p>
+                <p className="text-sm text-gray-600">• Track order status</p>
+                <p className="text-sm text-gray-600">• Review transactions</p>
               </div>
             </CardContent>
           </Card>

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import db from "@/config/db";
 import { JWT_SECRET } from "@/constants";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,12 +11,14 @@ export default async function handler(
   try {
     if (req.method !== "POST") return res.status(405).end();
     const { email, password } = req.body;
+    console.log(email, password);
     if (!email || !password) {
       return res
         .status(400)
         .json({ status: 400, message: "Harap isi email dan password" });
     }
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findFirst({ where: { email } });
+    console.log({ user });
     if (!user) {
       return res
         .status(400)

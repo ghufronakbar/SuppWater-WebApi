@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Order, User, OrderItem, Product } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
+import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
 
 interface OrderWithDetails extends Order {
   user: User;
@@ -77,13 +78,7 @@ const SellerOrdersPage = () => {
   };
 
   if (loading) {
-    return (
-      <SellerLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </SellerLayout>
-    );
+    return <SellerLoading />;
   }
 
   return (
@@ -104,7 +99,9 @@ const SellerOrdersPage = () => {
                 <div key={order.id} className="border rounded-lg p-4 space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-semibold">Order #{order.id.slice(0, 8)}</p>
+                      <p className="font-semibold">
+                        Order #{order.id.slice(0, 8)}
+                      </p>
                       <p className="text-sm text-gray-600">
                         Customer: {order.user.name} ({order.user.email})
                       </p>
@@ -130,7 +127,10 @@ const SellerOrdersPage = () => {
                     <h4 className="font-medium mb-2">Order Items:</h4>
                     <div className="space-y-2">
                       {order.orderItems.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center">
+                        <div
+                          key={item.id}
+                          className="flex justify-between items-center"
+                        >
                           <div className="flex items-center space-x-3">
                             {item.product.images.length > 0 && (
                               <img
@@ -142,11 +142,14 @@ const SellerOrdersPage = () => {
                             <div>
                               <p className="font-medium">{item.product.name}</p>
                               <p className="text-sm text-gray-600">
-                                Qty: {item.quantity} × {formatRupiah(item.pricePerItem)}
+                                Qty: {item.quantity} ×{" "}
+                                {formatRupiah(item.pricePerItem)}
                               </p>
                             </div>
                           </div>
-                          <p className="font-medium">{formatRupiah(item.total)}</p>
+                          <p className="font-medium">
+                            {formatRupiah(item.total)}
+                          </p>
                         </div>
                       ))}
                     </div>

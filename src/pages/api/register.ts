@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import db from "@/config/db";
 import { JWT_SECRET } from "@/constants";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { $Enums } from "@prisma/client";
 
 export default async function handler(
@@ -20,7 +20,7 @@ export default async function handler(
     if (role !== "Seller" && role !== "User") {
       return res.status(400).json({ status: 400, message: "Role tidak valid" });
     }
-    const check = await db.user.findUnique({
+    const check = await db.user.findFirst({
       where: { email },
       select: { id: true },
     });

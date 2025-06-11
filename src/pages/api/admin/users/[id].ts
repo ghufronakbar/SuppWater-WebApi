@@ -20,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 // GET ONE USER
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
-  const user = await db.user.findUnique({
+  const user = await db.user.findFirst({
     where: { id },
   });
   if (!user) {

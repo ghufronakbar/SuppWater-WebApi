@@ -20,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 // GET ONE TRANSACTION
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
-  const transaction = await db.transaction.findUnique({
+  const transaction = await db.transaction.findFirst({
     where: { id },
     include: {
       user: true,

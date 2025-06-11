@@ -26,7 +26,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
   const userId = req.decoded?.id;
-  const order = await db.order.findUnique({
+  const order = await db.order.findFirst({
     where: { id },
     include: {
       user: true,
@@ -94,7 +94,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 async function PATCH(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
   const userId = await req.decoded?.id;
-  const order = await db.order.findUnique({
+  const order = await db.order.findFirst({
     where: { id },
     select: {
       status: true,
@@ -143,7 +143,7 @@ async function PATCH(req: NextApiRequest, res: NextApiResponse) {
 async function DELETE(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
   const userId = await req.decoded?.id;
-  const order = await db.order.findUnique({
+  const order = await db.order.findFirst({
     where: { id },
     select: {
       status: true,

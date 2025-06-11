@@ -10,6 +10,7 @@ import { Transaction, User } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
 import { FiDollarSign } from "react-icons/fi";
+import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
 
 interface TransactionWithUser extends Transaction {
   user: User;
@@ -33,15 +34,18 @@ const SellerTransactionsPage = () => {
       setLoading(true);
       const { data } = await api.get("/seller/transactions");
       setTransactions(data.data);
-      
+
       // Calculate balance
-      const calculatedBalance = data.data.reduce((acc: number, transaction: TransactionWithUser) => {
-        if (transaction.type === "Pemasukan") {
-          return acc + transaction.amount;
-        } else {
-          return acc - transaction.amount;
-        }
-      }, 0);
+      const calculatedBalance = data.data.reduce(
+        (acc: number, transaction: TransactionWithUser) => {
+          if (transaction.type === "Pemasukan") {
+            return acc + transaction.amount;
+          } else {
+            return acc - transaction.amount;
+          }
+        },
+        0
+      );
       setBalance(calculatedBalance);
     } catch (error) {
       toast({
@@ -78,7 +82,10 @@ const SellerTransactionsPage = () => {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.response?.data?.message || error.message || "Failed to process withdrawal",
+        description:
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to process withdrawal",
         variant: "destructive",
       });
     } finally {
@@ -98,15 +105,8 @@ const SellerTransactionsPage = () => {
   };
 
   if (loading) {
-    return (
-      <SellerLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </SellerLayout>
-    );
+    return <SellerLoading />;
   }
-
   return (
     <SellerLayout>
       <div className="space-y-6">
@@ -163,9 +163,9 @@ const SellerTransactionsPage = () => {
                   <Button type="submit" disabled={withdrawLoading}>
                     {withdrawLoading ? "Processing..." : "Submit Withdrawal"}
                   </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={() => setShowWithdrawForm(false)}
                   >
                     Cancel
@@ -194,7 +194,10 @@ const SellerTransactionsPage = () => {
                 </thead>
                 <tbody>
                   {transactions.map((transaction) => (
-                    <tr key={transaction.id} className="border-b hover:bg-gray-50">
+                    <tr
+                      key={transaction.id}
+                      className="border-b hover:bg-gray-50"
+                    >
                       <td className="py-3 px-4 text-gray-600">
                         {formatDate(transaction.createdAt)}
                       </td>

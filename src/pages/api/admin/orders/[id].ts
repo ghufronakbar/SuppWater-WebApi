@@ -21,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 // GET ORDER BY ID
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query as { id: string };
-  const order = await db.order.findUnique({
+  const order = await db.order.findFirst({
     where: { id },
     include: {
       user: true,

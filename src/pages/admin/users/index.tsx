@@ -5,6 +5,7 @@ import api from "@/config/api";
 import { useToast } from "@/components/ui/use-toast";
 import { User } from "@prisma/client";
 import formatDate from "@/utils/format/formatDate";
+import { AdminLoading } from "@/components/layouts/loading/AdminLoading";
 
 const AdminUsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -32,15 +33,8 @@ const AdminUsersPage = () => {
   };
 
   if (loading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </AdminLayout>
-    );
+    return <AdminLoading />;
   }
-
   return (
     <AdminLayout>
       <div className="space-y-6">

@@ -25,7 +25,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 // GET PROFILE
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const userId = await req.decoded?.id;
-  const user = await db.user.findUnique({
+  const user = await db.user.findFirst({
     where: { id: userId },
     include: {
       orders: {
@@ -77,7 +77,7 @@ async function PATCH(req: NextApiRequest, res: NextApiResponse) {
   if (!oldPassword || !newPassword) {
     return res.status(400).json({ message: "Harap isi semua field" });
   }
-  const user = await db.user.findUnique({ where: { id: req.decoded?.id } });
+  const user = await db.user.findFirst({ where: { id: req.decoded?.id } });
   if (!user) {
     return res.status(404).json({ message: "Data tidak ditemukan" });
   }

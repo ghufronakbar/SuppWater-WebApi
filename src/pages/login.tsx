@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -50,14 +56,16 @@ const LoginPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md bg-white">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">{APP_NAME}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">
+            {APP_NAME}
+          </CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -86,7 +94,11 @@ const LoginPage = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full text-white"
+              disabled={loading}
+            >
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>

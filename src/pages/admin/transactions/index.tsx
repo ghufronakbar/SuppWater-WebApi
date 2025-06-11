@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Transaction, User } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
+import { AdminLoading } from "@/components/layouts/loading/AdminLoading";
 
 interface TransactionWithUser extends Transaction {
   user: User;
@@ -48,20 +49,16 @@ const AdminTransactionsPage = () => {
   };
 
   if (loading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        </div>
-      </AdminLayout>
-    );
+    return <AdminLoading />;
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Transactions Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Transactions Management
+          </h1>
           <p className="text-gray-600">Monitor all financial transactions</p>
         </div>
 
@@ -83,7 +80,10 @@ const AdminTransactionsPage = () => {
                 </thead>
                 <tbody>
                   {transactions.map((transaction) => (
-                    <tr key={transaction.id} className="border-b hover:bg-gray-50">
+                    <tr
+                      key={transaction.id}
+                      className="border-b hover:bg-gray-50"
+                    >
                       <td className="py-3 px-4 font-mono text-sm">
                         {transaction.id.slice(0, 8)}...
                       </td>
@@ -100,7 +100,9 @@ const AdminTransactionsPage = () => {
                               {transaction.user.name.charAt(0).toUpperCase()}
                             </div>
                           )}
-                          <span className="text-sm">{transaction.user.name}</span>
+                          <span className="text-sm">
+                            {transaction.user.name}
+                          </span>
                         </div>
                       </td>
                       <td className="py-3 px-4 font-medium">
