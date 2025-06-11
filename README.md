@@ -1,3 +1,6 @@
+AquaGo. Ecommerce for water.
+Create a react native expo app for User, with the API documentation:
+
 # API Documentation
 
 ## Authentication
@@ -297,3 +300,6 @@
 }
 ```
 - 400/404 Error
+
+
+use bearer token for authorization

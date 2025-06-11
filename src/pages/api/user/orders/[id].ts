@@ -181,9 +181,7 @@ async function DELETE(req: NextApiRequest, res: NextApiResponse) {
       status: "Dibatalkan",
     },
   });
-  return res
-    .status(200)
-    .json({ message: "Pesanan berhasil ditandai sebagai selesai" });
+  return res.status(200).json({ message: "Berhasil membatalkan pesanan" });
 }
 
 export default apiAuth(handler, ["User"]);
