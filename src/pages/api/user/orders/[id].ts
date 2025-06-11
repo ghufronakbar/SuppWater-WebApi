@@ -99,6 +99,17 @@ async function PATCH(req: NextApiRequest, res: NextApiResponse) {
     select: {
       status: true,
       userId: true,
+      total: true,
+      orderItems: {
+        select: {
+          product: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+        take: 1,
+      },
     },
   });
   if (!order) {
@@ -128,12 +139,27 @@ async function PATCH(req: NextApiRequest, res: NextApiResponse) {
   if (order?.userId !== userId)
     return res.status(404).json({ message: "Data tidak ditemukan" });
 
-  await db.order.update({
-    where: { id },
-    data: {
-      status: "Selesai",
-    },
-  });
+  await Promise.all([
+    db.order.update({
+      where: { id },
+      data: {
+        status: "Selesai",
+      },
+      select: {
+        id: true,
+      },
+    }),
+    db.transaction.create({
+      data: {
+        amount: order.total,
+        type: "Pemasukan",
+        userId: order?.orderItems?.[0]?.product?.userId,
+      },
+      select: {
+        id: true,
+      },
+    }),
+  ]);
   return res
     .status(200)
     .json({ message: "Pesanan berhasil ditandai sebagai selesai" });
