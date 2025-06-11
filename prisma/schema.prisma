@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  Admin
+  User
+  Seller
+}
+
+model User {
+  id      String  @id @default(uuid())
+  name    String
+  role    Role    @default(User)
+  picture String?
+
+  email    String @unique
+  password String
+
+  products     Product[]
+  orders       Order[]
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Product {
+  id     String   @id @default(uuid())
+  name   String
+  desc   String   @db.Text()
+  price  Int
+  images String[]
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  orderItems OrderItem[]
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum StatusOrder {
+  Pending
+  Dibayar
+  Dikirim
+  Selesai
+  Dibatalkan
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  total  Int
+  status StatusOrder
+
+  latitude  Float
+  longitude Float
+  location  String @db.Text()
+
+  mtSnapToken   String?
+  mtRedirectUrl String? @db.Text()
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+
+  quantity     Int
+  pricePerItem Int
+  total        Int
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum TransactionType {
+  Pencairan
+  Pemasukan
+}
+
+model Transaction {
+  id String @id @default(uuid())
+
+  amount Int
+  type   TransactionType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
