@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { APP_NAME } from "@/constants";
 import { AxiosError } from "axios";
 import Link from "next/link";
+import Image from "next/image";
 
 interface LoginDTO {
   email: string;
@@ -38,14 +39,14 @@ const LoginPage = () => {
     try {
       await login(form.email, form.password);
       toast({
-        title: "Success",
-        description: "Login successful!",
+        title: "Berhasil",
+        description: "Login berhasil!",
       });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast({
-          title: "Error",
-          description: error.response?.data?.message || "Login failed",
+          title: "Kesalahan",
+          description: error.response?.data?.message || "Login gagal",
           variant: "destructive",
         });
       }
@@ -66,9 +67,16 @@ const LoginPage = () => {
           <CardTitle className="text-2xl font-bold text-primary">
             {APP_NAME}
           </CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+          <CardDescription>Masuk ke akun Anda</CardDescription>
         </CardHeader>
         <CardContent>
+          <Image
+            src={"/logo.png"}
+            alt=""
+            width={400}
+            height={400}
+            className="mx-auto w-40 h-40"
+          />
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -76,19 +84,19 @@ const LoginPage = () => {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Masukkan email"
                 value={form.email}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Kata Sandi</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Masukkan kata sandi"
                 value={form.password}
                 onChange={handleInputChange}
                 required
@@ -99,13 +107,13 @@ const LoginPage = () => {
               className="w-full text-white"
               disabled={loading}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Sedang masuk..." : "Masuk"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
+            Belum punya akun?{" "}
             <Link href="/register" className="text-primary hover:underline">
-              Register here
+              Daftar di sini
             </Link>
           </div>
         </CardContent>

@@ -7,6 +7,7 @@ import { Order, User, OrderItem, Product } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
 import { AdminLoading } from "@/components/layouts/loading/AdminLoading";
+import Image from "next/image";
 
 interface OrderWithDetails extends Order {
   user: User;
@@ -32,9 +33,10 @@ const AdminOrdersPage = () => {
       const { data } = await api.get("/admin/orders");
       setOrders(data.data);
     } catch (error) {
+      console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to fetch orders",
+        title: "Kesalahan",
+        description: "Gagal mengambil data pesanan",
         variant: "destructive",
       });
     } finally {
@@ -68,26 +70,26 @@ const AdminOrdersPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Orders Management
+            Manajemen Pesanan
           </h1>
-          <p className="text-gray-600">Monitor all orders in the system</p>
+          <p className="text-gray-600">Pantau semua pesanan di sistem</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>All Orders ({orders.length})</CardTitle>
+            <CardTitle>Semua Pesanan ({orders.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4">Order ID</th>
-                    <th className="text-left py-3 px-4">Customer</th>
+                    <th className="text-left py-3 px-4">ID Pesanan</th>
+                    <th className="text-left py-3 px-4">Pelanggan</th>
                     <th className="text-left py-3 px-4">Total</th>
                     <th className="text-left py-3 px-4">Status</th>
-                    <th className="text-left py-3 px-4">Date</th>
-                    <th className="text-left py-3 px-4">Items</th>
+                    <th className="text-left py-3 px-4">Tanggal</th>
+                    <th className="text-left py-3 px-4">Item</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -99,10 +101,12 @@ const AdminOrdersPage = () => {
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-2">
                           {order.user.picture ? (
-                            <img
+                            <Image
                               src={order.user.picture}
                               alt={order.user.name}
                               className="w-6 h-6 rounded-full"
+                              width={400}
+                              height={400}
                             />
                           ) : (
                             <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs">
@@ -143,7 +147,7 @@ const AdminOrdersPage = () => {
               </table>
               {orders.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  No orders found
+                  Tidak ada pesanan ditemukan
                 </div>
               )}
             </div>

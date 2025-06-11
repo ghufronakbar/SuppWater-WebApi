@@ -11,6 +11,7 @@ import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
 import { FiDollarSign } from "react-icons/fi";
 import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
+import { AxiosError } from "axios";
 
 interface TransactionWithUser extends Transaction {
   user: User;
@@ -48,9 +49,10 @@ const SellerTransactionsPage = () => {
       );
       setBalance(calculatedBalance);
     } catch (error) {
+      console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to fetch transactions",
+        title: "Kesalahan",
+        description: "Gagal mengambil data transaksi",
         variant: "destructive",
       });
     } finally {
@@ -65,29 +67,31 @@ const SellerTransactionsPage = () => {
     try {
       const amount = Number(withdrawAmount);
       if (amount <= 0) {
-        throw new Error("Amount must be greater than 0");
+        throw new Error("Jumlah harus lebih dari 0");
       }
       if (amount > balance) {
-        throw new Error("Insufficient balance");
+        throw new Error("Saldo tidak mencukupi");
       }
 
       await api.post("/seller/transactions", { amount });
       toast({
-        title: "Success",
-        description: "Withdrawal request submitted successfully",
+        title: "Berhasil",
+        description: "Permintaan pencairan berhasil diajukan",
       });
       setShowWithdrawForm(false);
       setWithdrawAmount("");
       fetchTransactions();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to process withdrawal",
-        variant: "destructive",
-      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Kesalahan",
+          description:
+            error.response?.data?.message ||
+            error.message ||
+            "Gagal memproses pencairan",
+          variant: "destructive",
+        });
+      }
     } finally {
       setWithdrawLoading(false);
     }
@@ -112,26 +116,26 @@ const SellerTransactionsPage = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Transactions</h1>
-            <p className="text-gray-600">Manage your financial transactions</p>
+            <h1 className="text-3xl font-bold text-gray-900">Transaksi</h1>
+            <p className="text-gray-600">Kelola transaksi keuangan Anda</p>
           </div>
           <Button onClick={() => setShowWithdrawForm(true)}>
             <FiDollarSign className="mr-2 h-4 w-4" />
-            Withdraw
+            Cairkan Saldo
           </Button>
         </div>
 
         {/* Balance Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Current Balance</CardTitle>
+            <CardTitle>Saldo Saat Ini</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">
               {formatRupiah(balance)}
             </div>
             <p className="text-sm text-gray-600 mt-1">
-              Available for withdrawal
+              Saldo yang dapat dicairkan
             </p>
           </CardContent>
         </Card>
@@ -140,35 +144,35 @@ const SellerTransactionsPage = () => {
         {showWithdrawForm && (
           <Card>
             <CardHeader>
-              <CardTitle>Withdraw Funds</CardTitle>
+              <CardTitle>Pencairan Dana</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleWithdraw} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="amount">Amount (IDR)</Label>
+                  <Label htmlFor="amount">Jumlah (IDR)</Label>
                   <Input
                     id="amount"
                     type="number"
-                    placeholder="Enter amount to withdraw"
+                    placeholder="Masukkan jumlah yang akan dicairkan"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     max={balance}
                     required
                   />
                   <p className="text-sm text-gray-600">
-                    Maximum: {formatRupiah(balance)}
+                    Maksimal: {formatRupiah(balance)}
                   </p>
                 </div>
                 <div className="flex space-x-2">
                   <Button type="submit" disabled={withdrawLoading}>
-                    {withdrawLoading ? "Processing..." : "Submit Withdrawal"}
+                    {withdrawLoading ? "Memproses..." : "Ajukan Pencairan"}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setShowWithdrawForm(false)}
                   >
-                    Cancel
+                    Batal
                   </Button>
                 </div>
               </form>
@@ -179,17 +183,17 @@ const SellerTransactionsPage = () => {
         {/* Transactions List */}
         <Card>
           <CardHeader>
-            <CardTitle>Transaction History ({transactions.length})</CardTitle>
+            <CardTitle>Riwayat Transaksi ({transactions.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4">Date</th>
-                    <th className="text-left py-3 px-4">Type</th>
-                    <th className="text-left py-3 px-4">Amount</th>
-                    <th className="text-left py-3 px-4">Transaction ID</th>
+                    <th className="text-left py-3 px-4">Tanggal</th>
+                    <th className="text-left py-3 px-4">Tipe</th>
+                    <th className="text-left py-3 px-4">Jumlah</th>
+                    <th className="text-left py-3 px-4">ID Transaksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -231,7 +235,7 @@ const SellerTransactionsPage = () => {
               </table>
               {transactions.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  No transactions found
+                  Tidak ada transaksi ditemukan
                 </div>
               )}
             </div>

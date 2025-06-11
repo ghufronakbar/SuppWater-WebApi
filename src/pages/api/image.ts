@@ -22,8 +22,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
-    const picture = files?.picture;
-    if (!picture) {
+    const { image } = files;
+    if (!image) {
       return res.status(500).json({
         message: "Harap upload gambar",
       });
@@ -45,7 +45,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           }
         );
 
-        const stream = fs.createReadStream(picture[0].filepath);
+        const stream = fs.createReadStream(image[0].filepath);
         stream.pipe(uploadStream);
       });
     };

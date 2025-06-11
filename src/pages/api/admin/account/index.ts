@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import db from "@/config/db";
 import apiAuth from "@/middleware/api-auth";
 import bcrypt from "bcryptjs";
+import { JWT_SECRET } from "@/constants";
+import jwt from "jsonwebtoken";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -54,6 +56,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 // EDIT PROFILE
 async function PUT(req: NextApiRequest, res: NextApiResponse) {
   const { email, name, picture } = req.body;
+  const userId = req.decoded?.id;
   if (!name || !email) {
     return res.status(400).json({ message: "Harap isi semua field" });
   }
@@ -62,13 +65,28 @@ async function PUT(req: NextApiRequest, res: NextApiResponse) {
   if (!re.test(String(email).toLowerCase())) {
     return res.status(400).json({ message: "Email tidak valid" });
   }
+  const checkEmail = await db.user.findFirst({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (checkEmail && checkEmail.id !== userId) {
+    return res.status(400).json({ message: "Email sudah terdaftar" });
+  }
   const user = await db.user.update({
-    where: { id: req.decoded?.id },
+    where: { id: userId },
     data: { email, name, picture: picture || null },
   });
-  return res
-    .status(200)
-    .json({ message: "Berhasil mengedit profile", data: user });
+  const accessToken = jwt.sign(user, JWT_SECRET);
+
+  return res.status(200).json({
+    message: "Berhasil mengedit profile",
+    data: { ...user, accessToken },
+  });
 }
 
 // CHANGE PASSWORD

@@ -11,14 +11,12 @@ export default async function handler(
   try {
     if (req.method !== "POST") return res.status(405).end();
     const { email, password } = req.body;
-    console.log(email, password);
     if (!email || !password) {
       return res
         .status(400)
         .json({ status: 400, message: "Harap isi email dan password" });
     }
     const user = await db.user.findFirst({ where: { email } });
-    console.log({ user });
     if (!user) {
       return res
         .status(400)
@@ -28,7 +26,7 @@ export default async function handler(
     if (!check) {
       return res.status(401).json({ status: 401, message: "Password salah" });
     }
-    const accessToken = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET);
+    const accessToken = jwt.sign(user, JWT_SECRET);
     return res.status(200).json({
       status: 200,
       message: "Berhasil login",

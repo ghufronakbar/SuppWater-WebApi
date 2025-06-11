@@ -20,6 +20,11 @@ export default async function handler(
     if (role !== "Seller" && role !== "User") {
       return res.status(400).json({ status: 400, message: "Role tidak valid" });
     }
+    const re =
+      /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    if (!re.test(String(email).toLowerCase())) {
+      return res.status(400).json({ message: "Email tidak valid" });
+    }
     const check = await db.user.findFirst({
       where: { email },
       select: { id: true },
@@ -40,7 +45,7 @@ export default async function handler(
       },
     });
 
-    const accessToken = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET);
+    const accessToken = jwt.sign(user, JWT_SECRET);
     return res.status(200).json({
       status: 200,
       message: "Berhasil registrasi",

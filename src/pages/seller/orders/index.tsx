@@ -8,6 +8,8 @@ import { Order, User, OrderItem, Product } from "@prisma/client";
 import formatRupiah from "@/utils/format/formatRupiah";
 import formatDate from "@/utils/format/formatDate";
 import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
+import Image from "next/image";
+import { AxiosError } from "axios";
 
 interface OrderWithDetails extends Order {
   user: User;
@@ -33,9 +35,10 @@ const SellerOrdersPage = () => {
       const { data } = await api.get("/seller/orders");
       setOrders(data.data);
     } catch (error) {
+      console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to fetch orders",
+        title: "Kesalahan",
+        description: "Gagal mengambil data pesanan",
         variant: "destructive",
       });
     } finally {
@@ -47,16 +50,20 @@ const SellerOrdersPage = () => {
     try {
       await api.patch(`/seller/orders/${orderId}`);
       toast({
-        title: "Success",
-        description: "Order marked as shipped",
+        title: "Berhasil",
+        description: "Pesanan ditandai sebagai dikirim",
       });
       fetchOrders();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to update order",
-        variant: "destructive",
-      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Kesalahan",
+          description:
+            error.response?.data?.message || "Gagal memperbarui pesanan",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -85,13 +92,13 @@ const SellerOrdersPage = () => {
     <SellerLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
-          <p className="text-gray-600">Manage orders for your products</p>
+          <h1 className="text-3xl font-bold text-gray-900">Pesanan Saya</h1>
+          <p className="text-gray-600">Kelola pesanan untuk produk Anda</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Orders ({orders.length})</CardTitle>
+            <CardTitle>Pesanan ({orders.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -100,13 +107,13 @@ const SellerOrdersPage = () => {
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-semibold">
-                        Order #{order.id.slice(0, 8)}
+                        Pesanan #{order.id.slice(0, 8)}
                       </p>
                       <p className="text-sm text-gray-600">
-                        Customer: {order.user.name} ({order.user.email})
+                        Pelanggan: {order.user.name} ({order.user.email})
                       </p>
                       <p className="text-sm text-gray-600">
-                        Date: {formatDate(order.createdAt)}
+                        Tanggal: {formatDate(order.createdAt)}
                       </p>
                     </div>
                     <div className="text-right">
@@ -124,7 +131,7 @@ const SellerOrdersPage = () => {
                   </div>
 
                   <div className="border-t pt-3">
-                    <h4 className="font-medium mb-2">Order Items:</h4>
+                    <h4 className="font-medium mb-2">Detail Pesanan:</h4>
                     <div className="space-y-2">
                       {order.orderItems.map((item) => (
                         <div
@@ -133,10 +140,12 @@ const SellerOrdersPage = () => {
                         >
                           <div className="flex items-center space-x-3">
                             {item.product.images.length > 0 && (
-                              <img
+                              <Image
                                 src={item.product.images[0]}
                                 alt={item.product.name}
                                 className="w-12 h-12 rounded object-cover"
+                                width={400}
+                                height={400}
                               />
                             )}
                             <div>
@@ -157,14 +166,14 @@ const SellerOrdersPage = () => {
 
                   <div className="border-t pt-3">
                     <p className="text-sm text-gray-600 mb-2">
-                      <strong>Delivery Location:</strong> {order.location}
+                      <strong>Lokasi Pengantaran:</strong> {order.location}
                     </p>
                     {order.status === "Dibayar" && (
                       <Button
                         onClick={() => updateOrderStatus(order.id)}
                         size="sm"
                       >
-                        Mark as Shipped
+                        Tandai sebagai Dikirim
                       </Button>
                     )}
                   </div>
@@ -173,7 +182,7 @@ const SellerOrdersPage = () => {
             </div>
             {orders.length === 0 && (
               <div className="text-center py-8 text-gray-500">
-                No orders found
+                Tidak ada pesanan ditemukan
               </div>
             )}
           </CardContent>

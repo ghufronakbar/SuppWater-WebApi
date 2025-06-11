@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { User } from "@prisma/client";
 import formatDate from "@/utils/format/formatDate";
 import { AdminLoading } from "@/components/layouts/loading/AdminLoading";
+import Image from "next/image";
 
 const AdminUsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -22,9 +23,10 @@ const AdminUsersPage = () => {
       const { data } = await api.get("/admin/users");
       setUsers(data.data);
     } catch (error) {
+      console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to fetch users",
+        title: "Kesalahan",
+        description: "Gagal mengambil data pengguna",
         variant: "destructive",
       });
     } finally {
@@ -39,23 +41,25 @@ const AdminUsersPage = () => {
     <AdminLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Users Management</h1>
-          <p className="text-gray-600">Manage all registered users</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Pengguna Terdaftar
+          </h1>
+          <p className="text-gray-600">Seluruh pengguna terdaftar</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>All Users ({users.length})</CardTitle>
+            <CardTitle>Semua Pengguna ({users.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4">Name</th>
+                    <th className="text-left py-3 px-4">Nama</th>
                     <th className="text-left py-3 px-4">Email</th>
-                    <th className="text-left py-3 px-4">Role</th>
-                    <th className="text-left py-3 px-4">Joined</th>
+                    <th className="text-left py-3 px-4">Peran</th>
+                    <th className="text-left py-3 px-4">Bergabung</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -64,10 +68,12 @@ const AdminUsersPage = () => {
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-3">
                           {user.picture ? (
-                            <img
+                            <Image
                               src={user.picture}
                               alt={user.name}
                               className="w-8 h-8 rounded-full"
+                              width={400}
+                              height={400}
                             />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm">
@@ -86,7 +92,7 @@ const AdminUsersPage = () => {
                               : "bg-blue-100 text-blue-800"
                           }`}
                         >
-                          {user.role}
+                          {user.role === "Seller" ? "Penjual" : "Pengguna"}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-600">
@@ -98,7 +104,7 @@ const AdminUsersPage = () => {
               </table>
               {users.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  No users found
+                  Tidak ada pengguna ditemukan
                 </div>
               )}
             </div>

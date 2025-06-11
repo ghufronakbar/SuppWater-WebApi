@@ -1,24 +1,25 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import api from "@/config/api";
-import { $Enums } from "@prisma/client";
-import { APP_NAME } from "@/constants";
+import { Api } from "@/models/Api";
+import { User } from "@prisma/client";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: $Enums.Role;
-  picture?: string;
-}
+export type UserWithToken = User & { accessToken: string };
 
 interface AuthContextType {
-  user: User | null;
+  user: UserWithToken | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
+  updateUser: (user: UserWithToken) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,7 +37,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserWithToken | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         endpoint = "/seller/account/auth";
       }
 
-      const { data } = await api.get(endpoint);
+      const { data } = await api.get<Api<UserWithToken>>(endpoint);
       setUser(data.data);
     } catch (error) {
       console.error("Auth check failed:", error);
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const { data } = await api.post("/login", { email, password });
       const { accessToken, ...userData } = data.data;
-      
+
       Cookies.set("accessToken", accessToken);
       setUser(userData);
 
@@ -98,8 +99,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth();
   }, [router.pathname]);
 
+  const updateUser = (user: UserWithToken) => {
+    Cookies.set("accessToken", user.accessToken);
+    setUser(user);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, logout, checkAuth, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

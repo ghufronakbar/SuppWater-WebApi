@@ -17,21 +17,53 @@ import {
 } from "react-icons/fi";
 import formatRupiah from "@/utils/format/formatRupiah";
 import { SellerLoading } from "@/components/layouts/loading/SellerLoading";
+import { Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import { Order, Product, Transaction } from "@prisma/client";
 
-interface DashboardStats {
-  totalProducts: number;
-  totalOrders: number;
-  totalTransactions: number;
-  totalBalance: number;
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
+
+interface DashboardData {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    picture: string | null;
+    createdAt: string;
+  };
+  products: Array<Product>;
+  orders: Array<Order>;
+  transactions: Array<Transaction>;
+  stats: {
+    totalProducts: number;
+    totalOrders: number;
+    totalTransactions: number;
+    totalBalance: number;
+    orderStatusCount: Record<string, number>;
+  };
+  recentOrders: Array<Order>;
+  recentTransactions: Array<Transaction>;
 }
 
 const DashboardSeller = () => {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalProducts: 0,
-    totalOrders: 0,
-    totalTransactions: 0,
-    totalBalance: 0,
-  });
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -42,34 +74,13 @@ const DashboardSeller = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-
-      // Fetch all data in parallel
-      const [productsRes, ordersRes, transactionsRes] = await Promise.all([
-        api.get("/seller/products"),
-        api.get("/seller/orders"),
-        api.get("/seller/transactions"),
-      ]);
-
-      // Calculate balance from transactions
-      const transactions = transactionsRes.data.data;
-      const balance = transactions.reduce((acc: number, transaction: any) => {
-        if (transaction.type === "Pemasukan") {
-          return acc + transaction.amount;
-        } else {
-          return acc - transaction.amount;
-        }
-      }, 0);
-
-      setStats({
-        totalProducts: productsRes.data.data.length,
-        totalOrders: ordersRes.data.data.length,
-        totalTransactions: transactions.length,
-        totalBalance: balance,
-      });
+      const { data } = await api.get("/seller/dashboard");
+      setDashboard(data.data);
     } catch (error) {
+      console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to fetch dashboard data",
+        title: "Kesalahan",
+        description: "Gagal mengambil data dashboard",
         variant: "destructive",
       });
     } finally {
@@ -77,120 +88,187 @@ const DashboardSeller = () => {
     }
   };
 
-  const statCards = [
-    {
-      title: "My Products",
-      value: stats.totalProducts,
-      description: "Active products",
-      icon: FiPackage,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-    },
-    {
-      title: "Total Orders",
-      value: stats.totalOrders,
-      description: "All orders received",
-      icon: FiShoppingCart,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-    },
-    {
-      title: "Transactions",
-      value: stats.totalTransactions,
-      description: "Financial transactions",
-      icon: FiDollarSign,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-    },
-    {
-      title: "Balance",
-      value: formatRupiah(stats.totalBalance),
-      description: "Current balance",
-      icon: FiTrendingUp,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      isAmount: true,
-    },
-  ];
-
-  if (loading) {
+  if (loading || !dashboard) {
     return <SellerLoading />;
   }
+
+  // Chart Data
+  const orderStatusLabels = Object.keys(dashboard.stats.orderStatusCount);
+  const orderStatusData = Object.values(dashboard.stats.orderStatusCount);
+  const orderStatusColors = [
+    "#facc15", // Pending
+    "#60a5fa", // Dibayar
+    "#a78bfa", // Dikirim
+    "#4ade80", // Selesai
+    "#f87171", // Dibatalkan
+  ];
+
+  const doughnutData = {
+    labels: orderStatusLabels,
+    datasets: [
+      {
+        label: "Status Pesanan",
+        data: orderStatusData,
+        backgroundColor: orderStatusColors,
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Bento Info
+  const bento = [
+    {
+      title: "Produk Aktif",
+      value: dashboard.stats.totalProducts,
+      icon: <FiPackage className="h-6 w-6 text-blue-600" />,
+      desc: "Produk yang dijual saat ini",
+    },
+    {
+      title: "Total Pesanan",
+      value: dashboard.stats.totalOrders,
+      icon: <FiShoppingCart className="h-6 w-6 text-green-600" />,
+      desc: "Semua pesanan yang diterima",
+    },
+    {
+      title: "Transaksi",
+      value: dashboard.stats.totalTransactions,
+      icon: <FiDollarSign className="h-6 w-6 text-purple-600" />,
+      desc: "Transaksi keuangan",
+    },
+    {
+      title: "Saldo",
+      value: formatRupiah(dashboard.stats.totalBalance),
+      icon: <FiTrendingUp className="h-6 w-6 text-orange-600" />,
+      desc: "Saldo saat ini",
+    },
+  ];
 
   return (
     <SellerLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Seller Dashboard</h1>
-          <p className="text-gray-600">Welcome to your seller dashboard</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Dashboard Penjual
+          </h1>
+          <p className="text-gray-600">
+            Selamat datang, {dashboard.user.name}!
+          </p>
         </div>
 
+        {/* Bento Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statCards.map((stat, index) => (
-            <Card key={index}>
+          {bento.map((item, idx) => (
+            <Card key={idx}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {stat.title}
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  {item.icon}
+                  {item.title}
                 </CardTitle>
-                <div className={`p-2 rounded-full ${stat.bgColor}`}>
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
-                  {stat.isAmount ? stat.value : stat.value}
-                </div>
-                <CardDescription>{stat.description}</CardDescription>
+                <div className="text-2xl font-bold">{item.value}</div>
+                <CardDescription>{item.desc}</CardDescription>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
+        {/* Chart & Recent Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Business Overview</CardTitle>
-              <CardDescription>Your business performance</CardDescription>
+              <CardTitle>Status Pesanan</CardTitle>
+              <CardDescription>Distribusi status pesanan Anda</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Active Products</span>
-                  <span className="font-medium">{stats.totalProducts}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Total Orders</span>
-                  <span className="font-medium">{stats.totalOrders}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Current Balance</span>
-                  <span className="font-medium text-green-600">
-                    {formatRupiah(stats.totalBalance)}
-                  </span>
-                </div>
+              <div className="h-64 flex items-center justify-center">
+                <Doughnut data={doughnutData} />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="col-span-2">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Manage your business</CardDescription>
+              <CardTitle>Pesanan Terbaru</CardTitle>
+              <CardDescription>5 pesanan terakhir</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600">
-                  • Add new products to your catalog
-                </p>
-                <p className="text-sm text-gray-600">
-                  • Process incoming orders
-                </p>
-                <p className="text-sm text-gray-600">
-                  • Withdraw your earnings
-                </p>
-                <p className="text-sm text-gray-600">
-                  • Track transaction history
-                </p>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr>
+                      <th className="text-left py-2 px-2">ID</th>
+                      <th className="text-left py-2 px-2">Status</th>
+                      <th className="text-left py-2 px-2">Total</th>
+                      <th className="text-left py-2 px-2">Tanggal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboard.recentOrders.map((order) => (
+                      <tr key={order.id} className="border-b">
+                        <td className="py-2 px-2 font-mono">
+                          {order.id.slice(0, 8)}...
+                        </td>
+                        <td className="py-2 px-2">{order.status}</td>
+                        <td className="py-2 px-2 text-green-600">
+                          {formatRupiah(order.total)}
+                        </td>
+                        <td className="py-2 px-2">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {dashboard.recentOrders.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    Tidak ada pesanan ditemukan
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Transaksi Terbaru</CardTitle>
+              <CardDescription>5 transaksi terakhir</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr>
+                      <th className="text-left py-2 px-2">ID</th>
+                      <th className="text-left py-2 px-2">Tipe</th>
+                      <th className="text-left py-2 px-2">Jumlah</th>
+                      <th className="text-left py-2 px-2">Tanggal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboard.recentTransactions.map((trx) => (
+                      <tr key={trx.id} className="border-b">
+                        <td className="py-2 px-2 font-mono">
+                          {trx.id.slice(0, 8)}...
+                        </td>
+                        <td className="py-2 px-2">{trx.type}</td>
+                        <td className="py-2 px-2 text-blue-600">
+                          {formatRupiah(trx.amount)}
+                        </td>
+                        <td className="py-2 px-2">
+                          {new Date(trx.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {dashboard.recentTransactions.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    Tidak ada transaksi ditemukan
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

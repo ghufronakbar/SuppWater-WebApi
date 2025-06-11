@@ -27,9 +27,10 @@ const AdminTransactionsPage = () => {
       const { data } = await api.get("/admin/transactions");
       setTransactions(data.data);
     } catch (error) {
+      console.log(error);
       toast({
-        title: "Error",
-        description: "Failed to fetch transactions",
+        title: "Kesalahan",
+        description: "Gagal mengambil data transaksi",
         variant: "destructive",
       });
     } finally {
@@ -57,25 +58,25 @@ const AdminTransactionsPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Transactions Management
+            Manajemen Transaksi
           </h1>
-          <p className="text-gray-600">Monitor all financial transactions</p>
+          <p className="text-gray-600">Pantau semua transaksi keuangan</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>All Transactions ({transactions.length})</CardTitle>
+            <CardTitle>Semua Transaksi ({transactions.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4">Transaction ID</th>
-                    <th className="text-left py-3 px-4">User</th>
-                    <th className="text-left py-3 px-4">Amount</th>
-                    <th className="text-left py-3 px-4">Type</th>
-                    <th className="text-left py-3 px-4">Date</th>
+                    <th className="text-left py-3 px-4">ID Transaksi</th>
+                    <th className="text-left py-3 px-4">Pengguna</th>
+                    <th className="text-left py-3 px-4">Jumlah</th>
+                    <th className="text-left py-3 px-4">Tipe</th>
+                    <th className="text-left py-3 px-4">Tanggal</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,7 +136,7 @@ const AdminTransactionsPage = () => {
               </table>
               {transactions.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  No transactions found
+                  Tidak ada transaksi ditemukan
                 </div>
               )}
             </div>
