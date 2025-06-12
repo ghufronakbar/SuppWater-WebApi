@@ -47,6 +47,8 @@ export default async function handler(
         password: hashedPass,
         role: role as $Enums.Role,
         name,
+        bankAccount: bankAccount || null,
+        bankName: bankName || null,
       },
     });
 
