@@ -1,0 +1,34 @@
+[
+  {
+    "id": "a32ea978-b1c3-441a-83d2-af39d307780c",
+    "amount": 250000,
+    "type": "Pemasukan",
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "createdAt": "2025-06-12T08:41:53.896Z",
+    "updatedAt": "2025-06-12T08:41:53.896Z"
+  },
+  {
+    "id": "c455f008-4889-42ef-a81f-22c36297a7cc",
+    "amount": 250000,
+    "type": "Pencairan",
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "createdAt": "2025-06-12T08:42:45.087Z",
+    "updatedAt": "2025-06-12T08:42:45.087Z"
+  },
+  {
+    "id": "5f6a30f6-c76e-4928-8ba2-85b4960bfe2a",
+    "amount": 150000,
+    "type": "Pemasukan",
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "createdAt": "2025-06-12T13:21:59.797Z",
+    "updatedAt": "2025-06-12T13:21:59.797Z"
+  },
+  {
+    "id": "c1d8a4e4-9f31-43ac-a63a-81b88f563225",
+    "amount": 400000,
+    "type": "Pemasukan",
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "createdAt": "2025-06-13T05:46:48.232Z",
+    "updatedAt": "2025-06-13T05:46:48.232Z"
+  }
+]

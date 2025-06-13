@@ -1,0 +1,50 @@
+[
+  {
+    "id": "6e729633-2e9d-4869-acbf-7caf53eb7b13",
+    "name": "Adminx",
+    "role": "Admin",
+    "picture": "https://res.cloudinary.com/dga0wmldp/image/upload/v1749650399/SuppWater/dnlclzdadtwuyk0kmfdz.png",
+    "bankName": null,
+    "bankAccount": null,
+    "email": "admin@example.com",
+    "password": "$2b$10$VbHep5WRKbt4tlSD84YVLOGdNb37hLZycnVYDI9sQYyUJ.AbwvzWG",
+    "createdAt": "2025-06-11T09:48:22.898Z",
+    "updatedAt": "2025-06-11T14:00:24.694Z"
+  },
+  {
+    "id": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "name": "Adjani ",
+    "role": "Seller",
+    "picture": null,
+    "bankName": null,
+    "bankAccount": null,
+    "email": "prasana@gmail.com",
+    "password": "$2b$10$T67sS/2qtBs5khHPDDIZiOwAg605gA5/HYFZouN81p36WrspgF5BC",
+    "createdAt": "2025-06-12T08:03:26.485Z",
+    "updatedAt": "2025-06-12T08:03:26.485Z"
+  },
+  {
+    "id": "6becea14-efc5-4879-9eb1-cbf960257ca2",
+    "name": "Adjani",
+    "role": "User",
+    "picture": null,
+    "bankName": null,
+    "bankAccount": null,
+    "email": "prasana1@gmail.com",
+    "password": "$2b$10$0I0eAf6h7rLCqvpVfVGX.u6PnkVYiA/k/k0ixZTxBu5O9cwxuX8Lu",
+    "createdAt": "2025-06-12T08:16:00.191Z",
+    "updatedAt": "2025-06-12T08:16:00.191Z"
+  },
+  {
+    "id": "eb80417c-ee5d-49af-ab4b-46e0f07ede84",
+    "name": "Adjani",
+    "role": "User",
+    "picture": "https://res.cloudinary.com/dga0wmldp/image/upload/v1749798801/AquaGo/cvtaeeciazr8cy9cyafv.jpg",
+    "bankName": null,
+    "bankAccount": null,
+    "email": "putra@gmail.com",
+    "password": "$2b$10$KPi9rsJgvHFox0msW/cvX.Pkbe6jegqLN4OnfKDOKHT/sFzNNGJBq",
+    "createdAt": "2025-06-13T07:12:41.757Z",
+    "updatedAt": "2025-06-13T07:13:26.459Z"
+  }
+]

@@ -48,6 +48,7 @@ const SellerOrdersPage = () => {
 
   const updateOrderStatus = async (orderId: string) => {
     try {
+      setLoading(true);
       await api.patch(`/seller/orders/${orderId}`);
       toast({
         title: "Berhasil",

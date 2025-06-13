@@ -1,0 +1,41 @@
+[
+  {
+    "id": "d3ef5b0b-3bb2-42e2-aec3-7c0d48faa527",
+    "name": "Air Tangki 1.200 L",
+    "desc": "Air Pegunungan Asli",
+    "price": 150000,
+    "images": [
+      "https://res.cloudinary.com/dga0wmldp/image/upload/v1749733807/AquaGo/wnh7mss7ip29i4akizly.jpg"
+    ],
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "isDeleted": false,
+    "createdAt": "2025-06-12T13:10:12.124Z",
+    "updatedAt": "2025-06-12T13:10:12.124Z"
+  },
+  {
+    "id": "2b4fbfae-af95-438f-870e-64a8d5e38323",
+    "name": "Air Tangki 5.000 L",
+    "desc": "Air Pegunungan",
+    "price": 250000,
+    "images": [
+      "https://res.cloudinary.com/dga0wmldp/image/upload/v1749716777/AquaGo/ps9zqqs0n1wisfourfhv.jpg"
+    ],
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "isDeleted": false,
+    "createdAt": "2025-06-12T08:26:35.761Z",
+    "updatedAt": "2025-06-12T13:10:55.360Z"
+  },
+  {
+    "id": "c4a8d8ba-990f-4099-a901-c5bc21737159",
+    "name": "Air Tangki 5.000 L",
+    "desc": "Air Pegunungan",
+    "price": 250000,
+    "images": [
+      "https://res.cloudinary.com/dga0wmldp/image/upload/v1749734111/AquaGo/kzxgmsrzyfaa4vyqqbxu.jpg"
+    ],
+    "userId": "14078615-8013-4d47-adf0-6675f21f9c41",
+    "isDeleted": true,
+    "createdAt": "2025-06-12T13:15:15.468Z",
+    "updatedAt": "2025-06-13T07:06:24.822Z"
+  }
+]

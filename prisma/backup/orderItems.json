@@ -1,0 +1,62 @@
+[
+  {
+    "id": "f97bea7d-713e-4052-b1c4-4725db388630",
+    "quantity": 1,
+    "pricePerItem": 250000,
+    "total": 250000,
+    "orderId": "c92e4033-b178-4ce8-8bf4-14c9fa74cca0",
+    "productId": "2b4fbfae-af95-438f-870e-64a8d5e38323",
+    "createdAt": "2025-06-12T08:39:32.709Z",
+    "updatedAt": "2025-06-12T08:39:32.709Z"
+  },
+  {
+    "id": "54a75521-0f86-4cd4-bfbe-b607b64b4e32",
+    "quantity": 1,
+    "pricePerItem": 150000,
+    "total": 150000,
+    "orderId": "0a497a59-db43-4e4e-8bd1-e24b4353f6fc",
+    "productId": "d3ef5b0b-3bb2-42e2-aec3-7c0d48faa527",
+    "createdAt": "2025-06-12T13:19:25.810Z",
+    "updatedAt": "2025-06-12T13:19:25.810Z"
+  },
+  {
+    "id": "e0c5dda4-4e5f-452f-8a9f-cd1089131bc0",
+    "quantity": 1,
+    "pricePerItem": 150000,
+    "total": 150000,
+    "orderId": "2fea9f0c-cc12-4985-9800-28d54d8be81c",
+    "productId": "d3ef5b0b-3bb2-42e2-aec3-7c0d48faa527",
+    "createdAt": "2025-06-13T02:44:22.243Z",
+    "updatedAt": "2025-06-13T02:44:22.243Z"
+  },
+  {
+    "id": "641e6708-b310-488f-a3bb-bd5d250c7428",
+    "quantity": 1,
+    "pricePerItem": 250000,
+    "total": 250000,
+    "orderId": "2fea9f0c-cc12-4985-9800-28d54d8be81c",
+    "productId": "c4a8d8ba-990f-4099-a901-c5bc21737159",
+    "createdAt": "2025-06-13T02:44:22.243Z",
+    "updatedAt": "2025-06-13T02:44:22.243Z"
+  },
+  {
+    "id": "8f2afce2-457a-4f64-8c71-b8ddb73947e5",
+    "quantity": 1,
+    "pricePerItem": 250000,
+    "total": 250000,
+    "orderId": "5fe5b85d-31b2-4895-86d7-3b6a6d6692fe",
+    "productId": "2b4fbfae-af95-438f-870e-64a8d5e38323",
+    "createdAt": "2025-06-13T07:14:03.601Z",
+    "updatedAt": "2025-06-13T07:14:03.601Z"
+  },
+  {
+    "id": "4b6112c7-3642-4c1b-b639-4f7cf36174b4",
+    "quantity": 1,
+    "pricePerItem": 250000,
+    "total": 250000,
+    "orderId": "855ced07-1d9d-4c6a-a11b-7631cb9d1b94",
+    "productId": "2b4fbfae-af95-438f-870e-64a8d5e38323",
+    "createdAt": "2025-06-13T07:16:44.138Z",
+    "updatedAt": "2025-06-13T07:16:44.138Z"
+  }
+]
